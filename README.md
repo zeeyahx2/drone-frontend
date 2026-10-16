@@ -34,5 +34,5 @@
 
 ## Links
 
-- API Server (Assignment #1): https://(ใส่ URL ของ Render)
-- เว็บที่ deploy แล้ว: https://(ใส่ URL ของ Vercel ทีหลัง)
+- API Server (Assignment #1): https://drone-api-server-1lc5.onrender.com/configs/67010310
+- เว็บที่ deploy แล้ว: https://drone-frontend-snowy.vercel.app
