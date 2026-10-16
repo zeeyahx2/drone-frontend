@@ -16,18 +16,43 @@ export default function App() {
       .catch(() => setError('โหลดข้อมูลไม่สำเร็จ'))
   }, [])
 
-  return (
-    <div className="container">
-      <h1>Drone Dashboard</h1>
+    return (
+    <div className="container py-4" style={{ maxWidth: 720 }}>
+      <h1 className="mb-4">Drone Dashboard</h1>
 
-      <nav>
-        <button onClick={() => setTab('config')}>View Config</button>
-        <button onClick={() => setTab('form')}>Temperature Log</button>
-        <button onClick={() => setTab('logs')}>View Logs</button>
-      </nav>
+      <ul className="nav nav-pills mb-4">
+        <li className="nav-item">
+          <button
+            className={`nav-link ${tab === 'config' ? 'active' : ''}`}
+            onClick={() => setTab('config')}
+          >
+            View Config
+          </button>
+        </li>
+        <li className="nav-item">
+          <button
+            className={`nav-link ${tab === 'form' ? 'active' : ''}`}
+            onClick={() => setTab('form')}
+          >
+            Temperature Log
+          </button>
+        </li>
+        <li className="nav-item">
+          <button
+            className={`nav-link ${tab === 'logs' ? 'active' : ''}`}
+            onClick={() => setTab('logs')}
+          >
+            View Logs
+          </button>
+        </li>
+      </ul>
 
-      {error && <p>{error}</p>}
-      {!config && !error && <p>กำลังโหลด...</p>}
+      {error && <div className="alert alert-danger">{error}</div>}
+      {!config && !error && (
+        <div className="text-center my-5">
+          <div className="spinner-border" role="status"></div>
+        </div>
+      )}
 
       {config && tab === 'config' && <ConfigPage config={config} />}
       {config && tab === 'form' && <FormPage config={config} />}
@@ -39,11 +64,26 @@ export default function App() {
 // ---------- หน้า 1: View Config ----------
 function ConfigPage({ config }) {
   return (
-    <div className="card">
-      <p><b>Drone ID:</b> {config.drone_id}</p>
-      <p><b>Drone Name:</b> {config.drone_name}</p>
-      <p><b>Light:</b> {config.light}</p>
-      <p><b>Country:</b> {config.country}</p>
+    <div className="card shadow-sm">
+      <div className="card-header fw-bold">Drone Config</div>
+      <ul className="list-group list-group-flush">
+        <li className="list-group-item d-flex justify-content-between">
+          <span>Drone ID</span>
+          <strong>{config.drone_id}</strong>
+        </li>
+        <li className="list-group-item d-flex justify-content-between">
+          <span>Drone Name</span>
+          <strong>{config.drone_name}</strong>
+        </li>
+        <li className="list-group-item d-flex justify-content-between">
+          <span>Light</span>
+          <strong>{config.light}</strong>
+        </li>
+        <li className="list-group-item d-flex justify-content-between">
+          <span>Country</span>
+          <strong>{config.country}</strong>
+        </li>
+      </ul>
     </div>
   )
 }
@@ -52,9 +92,11 @@ function ConfigPage({ config }) {
 function FormPage({ config }) {
   const [celsius, setCelsius] = useState('')
   const [message, setMessage] = useState('')
+  const [success, setSuccess] = useState(false)
 
   async function handleSubmit() {
     if (celsius === '') {
+      setSuccess(false)
       setMessage('กรุณากรอกอุณหภูมิ')
       return
     }
@@ -71,23 +113,39 @@ function FormPage({ config }) {
     })
 
     if (res.ok) {
+      setSuccess(true)
       setMessage('บันทึกสำเร็จ')
       setCelsius('')
     } else {
+      setSuccess(false)
       setMessage('บันทึกไม่สำเร็จ')
     }
   }
 
   return (
-    <div className="card">
-      <label>Temperature (°C)</label>
-      <input
-        type="number"
-        value={celsius}
-        onChange={(e) => setCelsius(e.target.value)}
-      />
-      <button onClick={handleSubmit}>Submit data</button>
-      {message && <p>{message}</p>}
+    <div className="card shadow-sm">
+      <div className="card-header fw-bold">Temperature Log</div>
+      <div className="card-body">
+        <div className="mb-3">
+          <label className="form-label">Temperature (°C)</label>
+          <input
+            type="number"
+            className="form-control"
+            value={celsius}
+            onChange={(e) => setCelsius(e.target.value)}
+          />
+        </div>
+
+        <button className="btn btn-primary" onClick={handleSubmit}>
+          Submit data
+        </button>
+
+        {message && (
+          <div className={`alert mt-3 mb-0 ${success ? 'alert-success' : 'alert-danger'}`}>
+            {message}
+          </div>
+        )}
+      </div>
     </div>
   )
 }
@@ -104,38 +162,51 @@ function LogsPage({ config }) {
   }, [page, config.drone_id])
 
   return (
-    <div className="card">
-      <table>
-        <thead>
-          <tr>
-            <th>Created</th>
-            <th>Country</th>
-            <th>Drone ID</th>
-            <th>Drone Name</th>
-            <th>Celsius</th>
-          </tr>
-        </thead>
-        <tbody>
-          {logs.map((log, i) => (
-            <tr key={i}>
-              <td>{log.created}</td>
-              <td>{log.country}</td>
-              <td>{log.drone_id}</td>
-              <td>{log.drone_name}</td>
-              <td>{log.celsius}</td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+    <div className="card shadow-sm">
+      <div className="card-header fw-bold">Temperature Logs</div>
+      <div className="card-body">
+        <div className="table-responsive">
+          <table className="table table-striped table-hover align-middle">
+            <thead className="table-dark">
+              <tr>
+                <th>Created</th>
+                <th>Country</th>
+                <th>Drone ID</th>
+                <th>Drone Name</th>
+                <th>Celsius</th>
+              </tr>
+            </thead>
+            <tbody>
+              {logs.map((log, i) => (
+                <tr key={i}>
+                  <td>{log.created}</td>
+                  <td>{log.country}</td>
+                  <td>{log.drone_id}</td>
+                  <td>{log.drone_name}</td>
+                  <td>{log.celsius}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
 
-      <div className="pager">
-        <button disabled={page === 1} onClick={() => setPage(page - 1)}>
-          Prev
-        </button>
-        <span>Page {page}</span>
-        <button disabled={logs.length < 12} onClick={() => setPage(page + 1)}>
-          Next
-        </button>
+        <div className="d-flex justify-content-between align-items-center">
+          <button
+            className="btn btn-outline-primary"
+            disabled={page === 1}
+            onClick={() => setPage(page - 1)}
+          >
+            Prev
+          </button>
+          <span>Page {page}</span>
+          <button
+            className="btn btn-outline-primary"
+            disabled={logs.length < 12}
+            onClick={() => setPage(page + 1)}
+          >
+            Next
+          </button>
+        </div>
       </div>
     </div>
   )
