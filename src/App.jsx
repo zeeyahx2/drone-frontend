@@ -16,48 +16,54 @@ export default function App() {
       .catch(() => setError('โหลดข้อมูลไม่สำเร็จ'))
   }, [])
 
-    return (
-    <div className="container py-4" style={{ maxWidth: 720 }}>
-      <h1 className="mb-4">Drone Dashboard</h1>
-
-      <ul className="nav nav-pills mb-4">
-        <li className="nav-item">
-          <button
-            className={`nav-link ${tab === 'config' ? 'active' : ''}`}
-            onClick={() => setTab('config')}
-          >
-            View Config
-          </button>
-        </li>
-        <li className="nav-item">
-          <button
-            className={`nav-link ${tab === 'form' ? 'active' : ''}`}
-            onClick={() => setTab('form')}
-          >
-            Temperature Log
-          </button>
-        </li>
-        <li className="nav-item">
-          <button
-            className={`nav-link ${tab === 'logs' ? 'active' : ''}`}
-            onClick={() => setTab('logs')}
-          >
-            View Logs
-          </button>
-        </li>
-      </ul>
-
-      {error && <div className="alert alert-danger">{error}</div>}
-      {!config && !error && (
-        <div className="text-center my-5">
-          <div className="spinner-border" role="status"></div>
+      return (
+    <>
+      <nav className="navbar bg-primary-subtle mb-4">
+        <div className="container" style={{ maxWidth: 720 }}>
+          <span className="navbar-brand mb-0 h1">Drone Dashboard</span>
         </div>
-      )}
+      </nav>
 
-      {config && tab === 'config' && <ConfigPage config={config} />}
-      {config && tab === 'form' && <FormPage config={config} />}
-      {config && tab === 'logs' && <LogsPage config={config} />}
-    </div>
+      <div className="container pb-4" style={{ maxWidth: 720 }}>
+        <ul className="nav nav-pills mb-4">
+          <li className="nav-item">
+            <button
+              className={`nav-link ${tab === 'config' ? 'active' : ''}`}
+              onClick={() => setTab('config')}
+            >
+              View Config
+            </button>
+          </li>
+          <li className="nav-item">
+            <button
+              className={`nav-link ${tab === 'form' ? 'active' : ''}`}
+              onClick={() => setTab('form')}
+            >
+              Temperature Log
+            </button>
+          </li>
+          <li className="nav-item">
+            <button
+              className={`nav-link ${tab === 'logs' ? 'active' : ''}`}
+              onClick={() => setTab('logs')}
+            >
+              View Logs
+            </button>
+          </li>
+        </ul>
+
+        {error && <div className="alert alert-danger">{error}</div>}
+        {!config && !error && (
+          <div className="text-center my-5">
+            <div className="spinner-border" role="status"></div>
+          </div>
+        )}
+
+        {config && tab === 'config' && <ConfigPage config={config} />}
+        {config && tab === 'form' && <FormPage config={config} />}
+        {config && tab === 'logs' && <LogsPage config={config} />}
+      </div>
+    </>
   )
 }
 
@@ -76,9 +82,13 @@ function ConfigPage({ config }) {
           <strong>{config.drone_name}</strong>
         </li>
         <li className="list-group-item d-flex justify-content-between">
-          <span>Light</span>
-          <strong>{config.light}</strong>
-        </li>
+  <span>Light</span>
+  <span
+    className={`badge ${config.light === 'on' ? 'text-bg-success' : 'text-bg-secondary'}`}
+  >
+    {config.light}
+  </span>
+</li>
         <li className="list-group-item d-flex justify-content-between">
           <span>Country</span>
           <strong>{config.country}</strong>
@@ -136,7 +146,7 @@ function FormPage({ config }) {
           />
         </div>
 
-        <button className="btn btn-primary" onClick={handleSubmit}>
+        <button className="btn btn-outline-primary" onClick={handleSubmit}>
           Submit data
         </button>
 
@@ -167,7 +177,7 @@ function LogsPage({ config }) {
       <div className="card-body">
         <div className="table-responsive">
           <table className="table table-striped table-hover align-middle">
-            <thead className="table-dark">
+            <thead className="table-light">
               <tr>
                 <th>Created</th>
                 <th>Country</th>

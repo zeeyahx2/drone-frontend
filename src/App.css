@@ -1,0 +1,23 @@
+body {
+  background-color: #f4f6f9 !important;
+}
+
+.nav-pills .nav-link {
+  color: #555 !important;
+}
+
+.nav-pills .nav-link.active {
+  background-color: #e7f0ff !important;
+  color: #0d6efd !important;
+}
+
+/* .btn-primary-subtle {
+  background-color: #e7f0ff !important;
+  color: #0d6efd !important;
+  border: none !important;
+}
+
+.btn-primary-subtle:hover {
+  background-color: #d0e2ff !important;
+  color: #0d6efd !important;
+} */
