@@ -4,6 +4,14 @@ import './App.css'
 const API = import.meta.env.VITE_API_URL
 const DRONE_ID = import.meta.env.VITE_DRONE_ID
 
+const CLOUDS = [
+  { src: '/cloud1.png', top: '6%', size: 128, duration: 70, delay: -10, opacity: 0.95 },
+  { src: '/cloud2.png', top: '20%', size: 96, duration: 95, delay: -60, opacity: 0.8 },
+  { src: '/cloud3.png', top: '46%', size: 160, duration: 80, delay: -30, opacity: 0.9 },
+  { src: '/cloud4.png', top: '64%', size: 96, duration: 110, delay: -80, opacity: 0.75 },
+  { src: '/cloud5.png', top: '80%', size: 128, duration: 75, delay: -45, opacity: 0.9 },
+]
+
 export default function App() {
   const [tab, setTab] = useState('config')
   const [config, setConfig] = useState(null)
@@ -16,8 +24,30 @@ export default function App() {
       .catch(() => setError('โหลดข้อมูลไม่สำเร็จ'))
   }, [])
 
-      return (
+  return (
     <>
+
+      <div className="sky" aria-hidden="true">
+        {CLOUDS.map((c, i) => (
+          <img
+            key={i}
+            src={c.src}
+            className="cloud"
+            alt=""
+            style={{
+              top: c.top,
+              width: c.size,
+              opacity: c.opacity,
+              animationDuration: `${c.duration}s`,
+              animationDelay: `${c.delay}s`,
+            }}
+          />
+        ))}
+        <div className="drone-fly">
+          <img src="/drone.png" className="drone" alt="" />
+        </div>
+      </div>
+
       <nav className="navbar bg-primary-subtle mb-4">
         <div className="container" style={{ maxWidth: 720 }}>
           <span className="navbar-brand mb-0 h1">Drone Dashboard</span>
@@ -82,13 +112,13 @@ function ConfigPage({ config }) {
           <strong>{config.drone_name}</strong>
         </li>
         <li className="list-group-item d-flex justify-content-between">
-  <span>Light</span>
-  <span
-    className={`badge ${config.light === 'on' ? 'text-bg-success' : 'text-bg-secondary'}`}
-  >
-    {config.light}
-  </span>
-</li>
+          <span>Light</span>
+          <span
+            className={`badge ${config.light === 'on' ? 'text-bg-success' : 'text-bg-secondary'}`}
+          >
+            {config.light}
+          </span>
+        </li>
         <li className="list-group-item d-flex justify-content-between">
           <span>Country</span>
           <strong>{config.country}</strong>
@@ -124,11 +154,11 @@ function FormPage({ config }) {
 
     if (res.ok) {
       setSuccess(true)
-      setMessage('บันทึกสำเร็จ')
+      setMessage('Successfully saved')
       setCelsius('')
     } else {
       setSuccess(false)
-      setMessage('บันทึกไม่สำเร็จ')
+      setMessage('Save failed')
     }
   }
 
