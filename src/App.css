@@ -1,41 +1,27 @@
 body {
   min-height: 100vh;
-  background-image: linear-gradient(
-    120deg,
-    #eaf4ff,
-    #f6f9ff,
-    #e9f7f5,
-    #f3efff,
-    #eaf4ff
-  );
+  background-image: linear-gradient(120deg,
+      #eaf4ff,
+      #f6f9ff,
+      #e9f7f5,
+      #f3efff,
+      #eaf4ff);
   background-size: 300% 300%;
   animation: sky-shift 24s ease-in-out infinite;
 }
 
 @keyframes sky-shift {
-  0%   { background-position: 0% 50%; }
-  50%  { background-position: 100% 50%; }
-  100% { background-position: 0% 50%; }
-}
+  0% {
+    background-position: 0% 50%;
+  }
 
-.nav-pills .nav-link {
-  color: #555;
-}
+  50% {
+    background-position: 100% 50%;
+  }
 
-.nav-pills .nav-link.active {
-  background-color: #e7f0ff;
-  color: #0d6efd;
-}
-
-.btn-primary-subtle {
-  background-color: #e7f0ff;
-  color: #0d6efd;
-  border: none;
-}
-
-.btn-primary-subtle:hover {
-  background-color: #d0e2ff;
-  color: #0d6efd;
+  100% {
+    background-position: 0% 50%;
+  }
 }
 
 /* ---------- ฉากพื้นหลัง ---------- */
@@ -76,24 +62,101 @@ body {
 }
 
 @keyframes drift-right {
-  from { transform: translateX(-300px); }
-  to   { transform: translateX(100vw); }
+  from {
+    transform: translateX(-300px);
+  }
+
+  to {
+    transform: translateX(100vw);
+  }
 }
 
 @keyframes fly-left {
-  from { transform: translateX(100vw); }
-  to   { transform: translateX(-200px); }
+  from {
+    transform: translateX(100vw);
+  }
+
+  to {
+    transform: translateX(-200px);
+  }
 }
 
 @keyframes bob {
-  0%, 100% { transform: translateY(0); }
-  50%      { transform: translateY(-10px); }
+
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+
+  50% {
+    transform: translateY(-10px);
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
+
   .cloud,
   .drone-fly,
   .drone {
+    animation: none;
+  }
+}
+
+.drone-loading {
+  width: 80px;
+  image-rendering: pixelated;
+  animation: bob 1.2s ease-in-out infinite;
+}
+
+ul.menu-bar {
+  --bs-nav-pills-border-radius: 999px;
+  --bs-nav-pills-link-active-bg: #e7f0ff;
+  --bs-nav-pills-link-active-color: #0d6efd;
+
+  display: flex;
+  flex-wrap: nowrap;
+  gap: 4px;
+  width: 100%;
+  max-width: 460px;
+  padding: 4px;
+  background: #fff;
+  border-radius: 999px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
+}
+
+ul.menu-bar .nav-item {
+  flex: 1 1 0;
+  min-width: 0;
+}
+
+ul.menu-bar .nav-link {
+  width: 100%;
+  padding: 8px 4px;
+  text-align: center;
+  white-space: nowrap;
+  font-size: 14px;
+  color: #555;
+  border-radius: 999px;
+}
+
+ul.menu-bar .nav-link.active {
+  background-color: #e7f0ff;
+  color: #0d6efd;
+}
+
+@media (max-width: 400px) {
+  ul.menu-bar .nav-link {
+    font-size: 13px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+
+  body,
+  .cloud,
+  .drone-fly,
+  .drone,
+  .drone-loading {
     animation: none;
   }
 }

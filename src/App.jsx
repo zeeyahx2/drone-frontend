@@ -19,9 +19,12 @@ export default function App() {
 
   useEffect(() => {
     fetch(`${API}/configs/${DRONE_ID}`)
-      .then((res) => res.json())
+      .then((res) => {
+        if (!res.ok) throw new Error('not ok')
+        return res.json()
+      })
       .then((data) => setConfig(data))
-      .catch(() => setError('โหลดข้อมูลไม่สำเร็จ'))
+      .catch(() => setError('Failed to load data'))
   }, [])
 
   return (
@@ -55,7 +58,7 @@ export default function App() {
       </nav>
 
       <div className="container pb-4" style={{ maxWidth: 720 }}>
-        <ul className="nav nav-pills mb-4">
+        <ul className="nav nav-pills mb-4 menu-bar">
           <li className="nav-item">
             <button
               className={`nav-link ${tab === 'config' ? 'active' : ''}`}
@@ -85,7 +88,8 @@ export default function App() {
         {error && <div className="alert alert-danger">{error}</div>}
         {!config && !error && (
           <div className="text-center my-5">
-            <div className="spinner-border" role="status"></div>
+            <img src="/drone.svg" className="drone-loading" alt="" />
+            <p className="text-secondary mt-3 mb-0">Loading...</p>
           </div>
         )}
 
@@ -137,26 +141,31 @@ function FormPage({ config }) {
   async function handleSubmit() {
     if (celsius === '') {
       setSuccess(false)
-      setMessage('กรุณากรอกอุณหภูมิ')
+      setMessage('Please enter a temperature')
       return
     }
 
-    const res = await fetch(`${API}/logs`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        drone_id: config.drone_id,
-        drone_name: config.drone_name,
-        country: config.country,
-        celsius: Number(celsius),
-      }),
-    })
+    try {
+      const res = await fetch(`${API}/logs`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          drone_id: config.drone_id,
+          drone_name: config.drone_name,
+          country: config.country,
+          celsius: Number(celsius),
+        }),
+      })
 
-    if (res.ok) {
-      setSuccess(true)
-      setMessage('Successfully saved')
-      setCelsius('')
-    } else {
+      if (res.ok) {
+        setSuccess(true)
+        setMessage('Successfully saved')
+        setCelsius('')
+      } else {
+        setSuccess(false)
+        setMessage('Save failed')
+      }
+    } catch {
       setSuccess(false)
       setMessage('Save failed')
     }
@@ -198,7 +207,7 @@ function LogsPage({ config }) {
   useEffect(() => {
     fetch(`${API}/logs/${config.drone_id}?page=${page}`)
       .then((res) => res.json())
-      .then((data) => setLogs(data))
+      .then((data) => setLogs(Array.isArray(data) ? data : []))
   }, [page, config.drone_id])
 
   return (
